@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  config-service:
+    container_name: config-service
+    image: maxahumada/config-service:latest
+    restart: always
+    ports:
+      - 8081:8081
+  eureka-service:
+    container_name: eureka-service
+    image: maxahumada/eureka-service:latest
+    ports:
+      - 8761:8761
+    depends_on:
+      - config-service
+    deploy:
+      restart_policy: 
+        condition: on-failure
+    environment:
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081

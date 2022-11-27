@@ -1,0 +1,159 @@
+version: '3.8'
+services:
+  mysql-db-personal:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Stark021
+      - MYSQL_DATABASE=muebleStgo_Personal
+    ports:
+      - 33061:3306
+
+  personal:
+    container_name: personal
+    image: maxahumada/personal:latest
+    restart: always
+    ports:
+      - 31231:63172
+    environment:
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081
+      - eureka.client.serviceUrl.defaultZone=http://eureka-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db-personal:3306/muebleStgo_Personal?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Stark021
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    depends_on:
+      - mysql-db-personal
+
+  mysql-db-planilla:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Stark021
+      - MYSQL_DATABASE=muebleStgo_Planilla
+    ports:
+      - 33062:3306
+
+  planilla:
+    container_name: planilla
+    image: maxahumada/planilla:latest
+    ports:
+      - 31235:62736
+    environment:
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081
+      - eureka.client.serviceUrl.defaultZone=http://eureka-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db-planilla:3306/muebleStgo_Planilla?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Stark021
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    depends_on:
+      - mysql-db-planilla
+
+  mysql-db-marca:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Stark021
+      - MYSQL_DATABASE=muebleStgo_marca_reloj
+    ports:
+      - 33063:3306
+
+  marca:
+    container_name: marca
+    image: maxahumada/marca:latest
+    ports:
+      - 31233:63149
+    environment:
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081
+      - eureka.client.serviceUrl.defaultZone=http://eureka-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db-marca:3306/muebleStgo_marca_reloj?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Stark021
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    depends_on:
+      - mysql-db-marca
+
+  mysql-db-justificativo:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Stark021
+      - MYSQL_DATABASE=muebleStgo_Justificativos
+    ports:
+      - 33064:3306
+
+  justificativo:
+    container_name: justificativo
+    image: maxahumada/justificativo:latest
+    ports:
+      - 31237:63125
+    environment:
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081
+      - eureka.client.serviceUrl.defaultZone=http://eureka-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db-justificativo:3306/muebleStgo_Justificativos?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Stark021
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    depends_on:
+      - mysql-db-justificativo
+
+  mysql-db-autorizacion:
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Stark021
+      - MYSQL_DATABASE=muebleStgo_Autorizaciones
+    ports:
+      - 33065:3306
+
+  autorizacion:
+    container_name: autorizacion
+    image: maxahumada/autorizacion:latest
+    ports:
+      - "31239:63097"
+    environment:
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081
+      - eureka.client.serviceUrl.defaultZone=http://eureka-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db-autorizacion:3306/muebleStgo_Autorizaciones?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Stark021
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    depends_on:
+      - mysql-db-autorizacion
+
+  gateway-service:
+    container_name: gateway-service
+    image: maxahumada/gateway-service:latest
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://eureka-service:8761/eureka
+      - spring.cloud.config.uri=http://config-service:8081
+      - spring.config.import=optional:configserver:http://config-service:8081
+      - EUREKA_URL=http://eureka-service:8761/eureka/
+    
+    depends_on:
+      - personal
+      - marca
+      - planilla
+      - autorizacion
+      - justificativo
+
+
+
+
+
+
+
+
+
+
+
+
+
